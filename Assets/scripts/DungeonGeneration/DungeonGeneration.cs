@@ -20,16 +20,7 @@ public class DungeonGeneration : MonoBehaviour
         RoomController.instance.LoadRoom("Start",0,0);
         foreach (Vector2Int habitacion in habitaciones)
         {
-            /*
-            if(habitacion == habitacionesDeLaMazmorra[habitacionesDeLaMazmorra.Count - 1] && !(habitacion == Vector2Int.zero))
-            {
-                RoomController.instance.LoadRoom("End", habitacion.x, habitacion.y);
-            }
-            else
-            {
-                RoomController.instance.LoadRoom("Empty", habitacion.x, habitacion.y);
-            }
-            */
+            
             
             RoomController.instance.LoadRoom("Empty", habitacion.x, habitacion.y);
         }

@@ -147,10 +147,10 @@ public class RoomController : MonoBehaviour
             if (!ultimaHabitacionCargada)
             {
                 StartCoroutine(CargarUltimaHabitacion());
-            }else if(ultimaHabitacionCargada && habitacionActualizadas)
+            }else if(ultimaHabitacionCargada && !habitacionActualizadas)
             {
                 foreach(Room room in loadedRooms)
-                {
+                {    
                     room.EliminarPuertasNoConectadas();
                 }
                 habitacionActualizadas = true;
@@ -170,25 +170,15 @@ public class RoomController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         if(loadRoomQueue.Count == 0)
         {
-            if (!habitacionActualizadas)
-            {
-                foreach (Room room in loadedRooms)
-                {
-                    Room ultimaHabitacion = loadedRooms[loadedRooms.Count - 1];
-                    Room tempRoom = new Room(ultimaHabitacion.X, ultimaHabitacion.Y);
-                    Destroy(ultimaHabitacion.gameObject);
 
-                    var habitacionAEliminar = loadedRooms.FirstOrDefault(item => item.X == tempRoom.X && item.Y == tempRoom.Y);
-                    if(habitacionAEliminar != null)
-                    {
-                        loadedRooms.Remove(habitacionAEliminar);
-                        LoadRoom("End", tempRoom.X, tempRoom.Y);
-                    }
-                    
+            Room ultimaHabitacion = loadedRooms[loadedRooms.Count - 1];            
 
-                }
-                habitacionActualizadas = true;
-            }
+            Room tempRoom = new Room(ultimaHabitacion.X, ultimaHabitacion.Y);
+            Destroy(ultimaHabitacion.gameObject);
+                
+            var habitacionAEliminar = loadedRooms.Single(item => item.X == tempRoom.X && item.Y == tempRoom.Y);
+            loadedRooms.Remove(habitacionAEliminar);
+            LoadRoom("End", tempRoom.X, tempRoom.Y); 
         }
         else
         {

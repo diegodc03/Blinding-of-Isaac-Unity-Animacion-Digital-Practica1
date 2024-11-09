@@ -121,6 +121,7 @@ public class EnemyController : MonoBehaviour
 
     void Follow()
     {
+        // Lo movemos de la posicion actual a la posicion del jugador , y como esto se hace por frame, se ira moviendo poco a poco en direccion al jugador
         transform.position = Vector2.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
     }
 

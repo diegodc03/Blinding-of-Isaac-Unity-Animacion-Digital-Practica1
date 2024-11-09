@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 
 public class Room : MonoBehaviour
@@ -70,6 +71,8 @@ public class Room : MonoBehaviour
     // pero si hay una habitacion conectada, se mantenga la puerta, si se ha quitado la puerta, se vuelva a introducir
     public void EliminarPuertasNoConectadas()
     {
+
+
         foreach (Door d in doors)
         {
             switch(d.doorType)
@@ -102,27 +105,66 @@ public class Room : MonoBehaviour
         }
     }
 
+    //Queremos que unicamente haya una entrada a la sala final para que así sea obligatorio pasar por todas las salas, si en algun momento estan muchas salas juntas
+    //, se eliminan las puertas de las salas que no esten conectadas a la sala final menos una.
+    public void EliminarPuertasUltimaSala()
+    {
+        //Establecesmos un booleano para que si en algun momento se activa, no se vuelva a activar y se salga del bucle ya que las demas puertas tienen que estar eliminadas
+        bool puertaEncontrada = false;
 
-
-    
-
-
-
+        foreach (Door d in doors)
+        {
+            //Debug.Log("Eliminando puertas no conectadas de la ultima sala dentro del foreach y la variable puerta encontrada" + puertaEncontrada);
+            switch (d.doorType)
+            {
+                case Door.DoorType.top:
+                    if (!RoomController.instance.DoesRoomExist(X, Y + 1) || puertaEncontrada)
+                    {
+                        d.gameObject.SetActive(false);
+                    }else{
+                        puertaEncontrada = true;
+                    }
+                    break;
+                case Door.DoorType.bottom:
+                    if (!RoomController.instance.DoesRoomExist(X, Y - 1) || puertaEncontrada)
+                    {        
+                        d.gameObject.SetActive(false);
+                    }else{
+                        puertaEncontrada = true;
+                    }
+                    break;
+                case Door.DoorType.left:
+                    if (!RoomController.instance.DoesRoomExist(X - 1, Y) || puertaEncontrada)
+                    {
+                        d.gameObject.SetActive(false);
+                    }else{
+                        puertaEncontrada = true;
+                    }
+                    break;
+                case Door.DoorType.right:
+                    if (!RoomController.instance.DoesRoomExist(X + 1, Y) || puertaEncontrada)
+                    {
+                        //Debug.Log("Eliminando puertas 1");
+                        d.gameObject.SetActive(false);
+                    }else{
+                        puertaEncontrada = true;
+                    }
+                    break;
+            }
+        }
+    }
 
 
 
     // Update is called once per frame
     void Update()
     {
-        if(name.Contains("End"))
+        if(name.Contains("End") && !actualizarPuertas)
         {
-            EliminarPuertasNoConectadas();
+            EliminarPuertasUltimaSala();
             actualizarPuertas = true;
         }
     }
-
-
-
 
 
 
