@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -11,6 +12,8 @@ public class Room : MonoBehaviour
     public int X;
     public int Y;
 
+    public Boolean passed = false;
+
     public Door leftDoor;
     public Door rightDoor;
     public Door topDoor;
@@ -18,11 +21,19 @@ public class Room : MonoBehaviour
 
     private bool actualizarPuertas = false;
 
+
+    public SpawnController spawnController; //Asignamos esto en el inspector
+
+
+    // Agregamos las puertas a una lista para facilitar su gestión
+   
+
     //Constructor
     public Room(int x, int y)
     {
         X = x;
         Y = y;
+        
     }
 
 
@@ -33,7 +44,10 @@ public class Room : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(RoomController.instance == null)
+        // Inicializamos la lista de puertas y las asignamos
+        
+
+        if (RoomController.instance == null)
         {
             Debug.Log("RoomController not found");
             return;
@@ -77,6 +91,7 @@ public class Room : MonoBehaviour
         {
             switch(d.doorType)
             {
+              
                 case Door.DoorType.top:
                     if (!RoomController.instance.DoesRoomExist(X, Y + 1))
                     {
@@ -189,7 +204,51 @@ public class Room : MonoBehaviour
         if(collision.tag == "Player")
         {
             RoomController.instance.OnPlayerEnterRoom(this);
+            Debug.Log("Player entered room on Rool Class" + X + ", " + Y);
+
+            if (spawnController != null)
+            {
+                spawnController.OnPlayerEnterRoom(this); // Llama a un método en el SpawnController
+            }
+
         }
     }
+
+
+
+    //En esta funcion vamos a hacer que si los enemigos han entrado en la sala, se cierren las puertas
+    public void activarPuertas()
+    {
+        if(passed == false)
+        {
+            //Actiamos las puertas
+            foreach(Door puerta in doors)
+            {
+                if(puerta.gameObject == true)
+                {
+                    puerta.CerrarPuerta();
+                }
+            }
+        }
+    }
+
+
+    //En estas funciones vamos a hacer que si se han eliminado todos los enemigos de la sala, se abran las puertas
+    public void desactivarPuertas()
+    {
+        if(passed == true)
+        {
+            foreach(Door puerta in doors)
+            {
+                if(puerta.gameObject == true)
+                {
+                    puerta.AbrirPuerta();
+                }
+            }
+        }
+    }
+
+
+
 
 }

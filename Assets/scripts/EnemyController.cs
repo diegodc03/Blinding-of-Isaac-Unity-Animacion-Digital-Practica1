@@ -25,6 +25,9 @@ public class EnemyController : MonoBehaviour
 
     GameObject player;
 
+    //para poder llamar a este
+    private SpawnController spawnController;
+
     public enemyState currState = enemyState.Wander;
 
     public EnemyType enemyType;
@@ -51,6 +54,7 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        spawnController = FindObjectOfType<SpawnController>();
     }
 
     // Update is called once per frame
@@ -159,7 +163,9 @@ public class EnemyController : MonoBehaviour
 
 
     public void Death()
-    {
+    { 
+        Debug.Log("Enemigo muerto");
+        spawnController.DecrementarEnemigosRestantes();
         Destroy(gameObject);
     }
 

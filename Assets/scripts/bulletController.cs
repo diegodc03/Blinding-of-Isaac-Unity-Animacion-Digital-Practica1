@@ -52,7 +52,7 @@ public class bulletController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-
+        Debug.Log("Colision with"+ col.tag);
         if (col.tag == "Enemy" && !isEnemyBullet)
         {
             col.gameObject.GetComponent<EnemyController>().Death();

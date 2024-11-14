@@ -8,40 +8,32 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemyPrefab;
     // Lista de puntos de spawn
     public Transform[] spawnPoints;
-    // Tiempo entre spawns
-    public float spawnInterval = 3f;
 
-    // Cantidad de enemigos a spawnear
-    public int maxEnemies = 50;
-    public int minEnemies = 5;
-
-    public int maxEnemiesRandom;
-
-    // Contador de enemigos actuales
-    private int currentEnemyCount = 0;
 
     // Para saber si la corrutina está en ejecución
     private bool isSpawning = false;
 
+    public int currentEnemyCount = 0;
 
 
     
 
 
-    public void StartSpawning()
+    public void StartSpawning(float spawnInterval, int maxEnemies, int minEnemies, int maxEnemiesRandom)
     {
         if (!isSpawning)  // Verifica si no se está generando ya enemigos
         {
-            StartCoroutine(SpawnEnemies());
+            StartCoroutine(SpawnEnemies(spawnInterval, maxEnemies, minEnemies, maxEnemiesRandom));
             isSpawning = true;
         }
     }
 
+    
 
-    IEnumerator SpawnEnemies()
+
+    IEnumerator SpawnEnemies(float spawnInterval, int maxEnemies, int minEnemies, int maxEnemiesRandom)
     {
-        // Selecciona un numero aleatorio de enemigos a spawnear
-        maxEnemiesRandom = Random.Range(minEnemies, maxEnemies);
+        
 
         // Mientras no se haya alcanzado el limite de enemigos
         while (currentEnemyCount < maxEnemiesRandom)
