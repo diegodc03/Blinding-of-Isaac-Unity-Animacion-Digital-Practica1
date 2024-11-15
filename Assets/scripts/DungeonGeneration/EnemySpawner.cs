@@ -21,6 +21,8 @@ public class EnemySpawner : MonoBehaviour
 
     public void StartSpawning(float spawnInterval, int maxEnemies, int minEnemies, int maxEnemiesRandom)
     {
+
+        Debug.Log("Enemigos a spawnear en startSpawning"+maxEnemiesRandom);
         if (!isSpawning)  // Verifica si no se está generando ya enemigos
         {
             StartCoroutine(SpawnEnemies(spawnInterval, maxEnemies, minEnemies, maxEnemiesRandom));
@@ -33,7 +35,7 @@ public class EnemySpawner : MonoBehaviour
 
     IEnumerator SpawnEnemies(float spawnInterval, int maxEnemies, int minEnemies, int maxEnemiesRandom)
     {
-        
+        Debug.Log("Enemigos a spawnear en spawnEnemies"+maxEnemiesRandom);
 
         // Mientras no se haya alcanzado el limite de enemigos
         while (currentEnemyCount < maxEnemiesRandom)

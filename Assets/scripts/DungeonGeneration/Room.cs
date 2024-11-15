@@ -39,7 +39,7 @@ public class Room : MonoBehaviour
 
     public List<Door> doors = new List<Door>();
 
-
+    public List<Door> activatedDoors = new List<Door>();
 
     // Start is called before the first frame update
     void Start()
@@ -97,11 +97,19 @@ public class Room : MonoBehaviour
                     {
                         d.gameObject.SetActive(false);
                     }
+                    else
+                    {
+                        activatedDoors.Add(d);
+                    }
                     break;
                 case Door.DoorType.bottom:
                     if (!RoomController.instance.DoesRoomExist(X, Y - 1))
                     {
                         d.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        activatedDoors.Add(d);
                     }
                     break;
                 case Door.DoorType.left:
@@ -109,11 +117,19 @@ public class Room : MonoBehaviour
                     {
                         d.gameObject.SetActive(false);
                     }
+                    else
+                    {
+                        activatedDoors.Add(d);
+                    }
                     break;
                 case Door.DoorType.right:
                     if (!RoomController.instance.DoesRoomExist(X + 1, Y))
                     {
                         d.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        activatedDoors.Add(d);
                     }
                     break;
             }
@@ -236,12 +252,16 @@ public class Room : MonoBehaviour
     //En estas funciones vamos a hacer que si se han eliminado todos los enemigos de la sala, se abran las puertas
     public void desactivarPuertas()
     {
+        Debug.Log("esttoy en desactivar puertas")
+            ;
         if(passed == true)
         {
             foreach(Door puerta in doors)
             {
+
                 if(puerta.gameObject == true)
                 {
+
                     puerta.AbrirPuerta();
                 }
             }
