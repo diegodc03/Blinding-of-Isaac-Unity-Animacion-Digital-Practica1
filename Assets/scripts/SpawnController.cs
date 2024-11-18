@@ -41,7 +41,7 @@ public class SpawnController : MonoBehaviour
         }
         
 
-        if (!enemiesSpawned && habitacionActual != null && !habitacionActual.passed)
+        if (!enemiesSpawned && habitacionActual != null && !habitacionActual.passed && !habitacionActual.isSpawningItems)
         {
             // Activar puertas si es necesario
             if (!puertasActivadas )
@@ -70,6 +70,8 @@ public class SpawnController : MonoBehaviour
 
         // Marca que los enemigos ya fueron spawneados
         enemiesSpawned = true;
+        habitacionActual.passed = true;
+        
     }
 
 

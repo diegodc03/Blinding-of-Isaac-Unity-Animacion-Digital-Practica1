@@ -7,6 +7,7 @@ public class EnemySpawner : MonoBehaviour
 {
     // Prefab del enemigo que se va a instanciar
     public GameObject enemyPrefab;
+    public GameObject enemyPrefab1;
     // Lista de puntos de spawn
    
 
@@ -29,6 +30,7 @@ public class EnemySpawner : MonoBehaviour
             isSpawning = true;
             StartCoroutine(SpawnEnemies(spawnInterval, maxEnemies, minEnemies, maxEnemiesRandom, spawnPoints));
             isSpawning = false;
+            
         }
     }
 
@@ -50,7 +52,15 @@ public class EnemySpawner : MonoBehaviour
             Transform randomSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
 
             // Instancia el enemigo en el punto aleatorio
-            Instantiate(enemyPrefab, randomSpawnPoint.position, Quaternion.identity);
+            if(currentEnemyCount%2==0)
+            {
+                Instantiate(enemyPrefab, randomSpawnPoint.position, Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(enemyPrefab1, randomSpawnPoint.position, Quaternion.identity);
+            }
+            //Instantiate(enemyPrefab, randomSpawnPoint.position, Quaternion.identity);
 
             // Aumenta el contador de enemigos
             currentEnemyCount++;

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[CreateAssetMenu(fileName = "DungeonGeneratorData.asset", menuName = "DungeonGeneratorData/Dungeon Data")]
-
 
 public class DungeonGeneratorData : MonoBehaviour
 {

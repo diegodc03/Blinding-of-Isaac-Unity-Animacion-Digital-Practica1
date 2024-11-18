@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class GameController : MonoBehaviour
 
     private static float moveSpeed = 5.0f;
 
-    private static float fireRate = 0.5f;
+    private static float fireRate = 1f;
 
     private static float bulletSize = 0.5f;
 
@@ -57,15 +58,16 @@ public class GameController : MonoBehaviour
 
 
 
-    // Start is called before the first frame update
-    private void Awake()
-    {
-        if(instance == null)
-        {
-            instance = this;
-        }
-    }
-
+    
+      // Start is called before the first frame update
+     private void Awake()
+     {
+         if(instance == null)
+         {
+             instance = this;
+         }
+     }
+     
 
 
     // Update is called once per frame
@@ -113,7 +115,18 @@ public class GameController : MonoBehaviour
 
     public static void KillPlayer()
     {
+        Destroy(GameObject.FindGameObjectWithTag("Player"));
 
+        SceneManager.LoadScene("MenuPrincipal");
+    }
+
+
+    public void ResetGameData()
+    {
+        health = 6.0f;
+        moveSpeed = 5.0f;
+        fireRate = 1f;
+        bulletSize = 0.5f;
     }
 
 

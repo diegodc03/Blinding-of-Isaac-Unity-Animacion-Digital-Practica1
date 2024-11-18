@@ -17,7 +17,7 @@ public class RoomController : MonoBehaviour
 
     public Room HabitacionActual;
     public SpawnController spawnController; //Asignamos esto en el inspector3
-    public ItemsSpawner itemsSpawner; //Asignamos esto en el inspector
+    //public ItemsSpawner itemsSpawner; //Asignamos esto en el inspector
 
     private List<EnemyController> enemiesInRoom = new List<EnemyController>();
 
@@ -141,13 +141,18 @@ public class RoomController : MonoBehaviour
         UpdateRoomQueue();
 
         ///Debug.Log("Habitacion actual: " + HabitacionActual);
-        if (HabitacionActual != null && !HabitacionActual.passed)
+        if (HabitacionActual != null && !HabitacionActual.passed && !HabitacionActual.isSpawningItems)
         {
            // Debug.Log("Habitacion actual no pasada");
             // Solo inicia el spawn si es una habitación nueva y no se han generado enemigos aún
             spawnController.CheckAndSpawnEnemies(HabitacionActual);
-            itemsSpawner.aniadirItemsALaRoom(HabitacionActual);
+            
         }
+        /*
+        if(HabitacionActual != null && itemsSpawner != null && !HabitacionActual.passed)
+        {
+            itemsSpawner.aniadirItemsALaRoom(HabitacionActual);
+        } */
     }
 
 
@@ -210,14 +215,20 @@ public class RoomController : MonoBehaviour
         CamaraController.instance.habitacionActual = room;
         HabitacionActual = room;
 
+        // Llamar a PlayerController para reiniciar sus datos
+        PlayerController.instance.ResetPlayerData();  // Asumiendo que tienes una función para resetear los datos del jugador
 
-        
-        
-        // Se podria mirar lo de que a parte de resetear el spawner, tambien se inicie el spawner de la habitacion para que no se este en el update del roomcontroller
+        // Llamar a GameController para reiniciar los valores globales
+        //GameController.instance.ResetGameData();  // Asumiendo que tienes una función para reiniciar los datos globales del juego
 
-        spawnController.ResetSpawnerState();
+        // Si la habitación no ha sido pasada, reiniciar el spawner
+        if (!room.passed)
+        {
+            spawnController.ResetSpawnerState();
+        }
 
-        
+
+
     }
 
 

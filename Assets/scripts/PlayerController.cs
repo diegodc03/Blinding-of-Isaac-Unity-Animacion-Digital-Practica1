@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController instance;
+
 
     public float speed;
     
     Rigidbody2D rigidbody;
+
     public Text collectedText;
     public static int collectedAmount = 0;
 
@@ -35,8 +39,8 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         //// Paara cuando cambiamos el valor
-        fireDelay = GameController.FireRate;
-        speed = GameController.MoveSpeed;
+        //fireDelay = GameController.FireRate;
+        //speed = GameController.MoveSpeed;
 
         
         //Coge el valor de los ejes
@@ -87,6 +91,14 @@ public class PlayerController : MonoBehaviour
         collectedText.text = "Item Collected: " + collectedAmount;
     }
 
+
+    void Awake()
+    {
+        instance = this;
+    }
+
+
+
     void Shoot(float x, float y)
     {
         if(x == 0 && y == 0)
@@ -110,6 +122,13 @@ public class PlayerController : MonoBehaviour
         bullet.transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
+
+    public void ResetPlayerData()
+    {
+        bulletSpeed = 10;
+        fireDelay = 0.5f;
+        speed = 10.0f;
+    }
 
    
 

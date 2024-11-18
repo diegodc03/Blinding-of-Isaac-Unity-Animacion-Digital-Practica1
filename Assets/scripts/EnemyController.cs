@@ -59,9 +59,13 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         player = GameObject.FindGameObjectWithTag("Player");
         spawnController = FindObjectOfType<SpawnController>();
         currentRoom = FindObjectOfType<RoomController>().HabitacionActual;  // Asigna la habitación actual del RoomController
+
+        speed = Random.Range(2f, 7f);
+        coolDown = Random.Range(0.3f, 1f);
     }
 
     // Update is called once per frame
@@ -102,9 +106,13 @@ public class EnemyController : MonoBehaviour
 
     public void OnPlayerEnterRoom()
     {
+
         Debug.Log("Player entered room on EnemyController");
         spawnController = FindObjectOfType<SpawnController>();
         currentRoom = FindObjectOfType<RoomController>().HabitacionActual;  // Actualiza la habitación cuando el jugador entra
+
+        // Cambiamos la velocidad dependiendo de la habitaciónse usara un random
+        
     }
 
 
@@ -150,6 +158,8 @@ public class EnemyController : MonoBehaviour
 
     void Atack()
     {
+
+
         if(!coolDownAtack)
         {
             //GameController.DamagePlayer(1);
@@ -161,6 +171,7 @@ public class EnemyController : MonoBehaviour
                     StartCoroutine(CoolDown());
                     break;
                 case (EnemyType.Ranged):
+                    Debug.Log("Atacando en RAAAAAAAAAAAAAAAAAAAAAAANGED");
                     GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity) as GameObject;
                     bullet.GetComponent<bulletController>().GetPlayer(player.transform);
                     bullet.AddComponent<Rigidbody2D>().gravityScale = 0;

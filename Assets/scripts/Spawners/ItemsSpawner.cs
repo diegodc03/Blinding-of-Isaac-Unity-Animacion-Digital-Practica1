@@ -3,29 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 
 
-[CreateAssetMenu(fileName = "New Collectible Item", menuName = "Collectible Item")]
 
-public class CollectibleItem : ScriptableObject // Renamed to CollectibleItem
-{
-    public String name;
-    public String description;
-    public Sprite image;
-}
 
 
 public class ItemsSpawner : MonoBehaviour
 {
-    public List<int> itemSpawned = new List<int>();
+    public List<CollectibleItem> items = new List<CollectibleItem>();
+
+    private int itemsSpawned= 0;
+    private List<int> spawnedZoneUsed = new List<int>();
 
     public int maxItemsToSpawn = 2;
     public int minItemsToSpawn = 1;
     public int ItemsRandomToSpawn = 0;
 
-    public List<CollectibleItem> itemsToSpawn = new List<CollectibleItem>();
 
 
     // Referencia al CollecionController para controlar el spawn
@@ -44,53 +40,68 @@ public class ItemsSpawner : MonoBehaviour
 
         
         // Si la habitación no ha sido pasada, se spawnearán items
-        if (!habitacionActual.passed && habitacionActual != null)
+        if (!habitacionActual.passed && habitacionActual != null && !habitacionActual.isSpawningItems)
         {
-            Debug.Log("he entrado sisisis");
+            
             ItemsRandomToSpawn = Random.Range(minItemsToSpawn, maxItemsToSpawn);
+            Debug.Log("Items a spawnear en aniadirItemsALaRoom" + ItemsRandomToSpawn);
+            StartCoroutine(SpawnItems(1f, ItemsRandomToSpawn, habitacionActual.spawnItems, habitacionActual.passed));
 
-            for(int i=0; i<ItemsRandomToSpawn; i++)
+        }
+    }  
+    
+
+    IEnumerator SpawnItems(float spawnInterval, int itemsRandomToSpawn, Transform[] spawnItems, bool passed)
+    {
+        Debug.Log("Items a spawnear en spawnItems" + itemsRandomToSpawn);
+        Debug.Log("spawnPoints" + spawnItems.Length);
+        
+
+        // Mientras no se haya alcanzado el limite de items
+        while (itemsSpawned < itemsRandomToSpawn && !passed)
+        {
+            // Espera el tiempo de intervalo
+            yield return new WaitForSeconds(spawnInterval);
+
+            bool spawnedZone = false;
+            while(spawnedZone == false)
             {
-                bool itemSpawnedBool = false;
-                while (!itemSpawnedBool)
+                // Selecciona un punto de spawn aleatorio
+                int num = Random.Range(0, spawnItems.Length);
+                spawnedZoneUsed.Add(num);
+                if (!spawnedZoneUsed.Contains(num))
                 {
+                    // Selecciona un item aleatorio de la lista
+                    int randomIndex = Random.Range(0, items.Count);
+                    CollectibleItem randomItem = items[randomIndex];
 
-                    // Seleccionamos un item aleatorio de la lista de items
-                    CollectibleItem item = itemsToSpawn[Random.Range(0, itemsToSpawn.Count)];
 
-                    int spawnElement = Random.Range(0, habitacionActual.spawnItems.Length);
-                    if (habitacionActual.spawnItems.Length == 0)
+                    spawnedZone = true;
+                    Transform randomSpawnPoint = spawnItems[num];
+
+                    // Instancia el item en el punto aleatorio
+                    GameObject collectibleObject = Instantiate(ColletionController.gameObject, randomSpawnPoint.position, Quaternion.identity);
+
+                    // Asigna el item al CollectionController
+                    CollectionController controller = collectibleObject.GetComponent<CollectionController>();
+                    if (controller != null)
                     {
-                        Debug.Log("No hay spawnItems en la habitación");
-                        
+                        controller.item = randomItem; // Asignamos el CollectibleItem al CollectionController
+                        controller.Start(); // Llamar al Start() para que se inicialice
                     }
 
-                    if (itemSpawned.Contains(spawnElement))
-                    {
-                        Debug.Log("Ya se ha spawnado un item en esta posición");
-                        
-                    }
-                    else
-                    {
 
-                        itemSpawned.Add(spawnElement);
-                        itemSpawnedBool = true;
-                        Transform spawnPosition = habitacionActual.spawnItems[spawnElement];
-
-
-                        // Creamos un nuevo item
-                        // Instanciamos el prefab con el script CollectionController
-                        GameObject collectibleObject = Instantiate(ColletionController.gameObject, spawnPosition.position, Quaternion.identity);
-
-                        CollectionController controller = collectibleObject.GetComponent<CollectionController>();
-                        if (controller != null)
-                        {
-                            controller.collectibleItem = item;
-                            controller.StartItem(item);
-                        }
-                    }
+                    // Aumenta el contador de items
+                    itemsSpawned++;
                 }
             }
+            
+            
+
+
+            
         }
-    }   
+        itemsSpawned = 0;
+    }
+
 }

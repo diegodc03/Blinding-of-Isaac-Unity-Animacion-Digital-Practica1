@@ -26,7 +26,7 @@ public class Room : MonoBehaviour
     public Transform[] spawnItems;
 
     public ItemsSpawner itemsSpawner; //Asignamos esto en el inspector
-
+    public bool isSpawningItems = false;
 
     public SpawnController spawnController; //Asignamos esto en el inspector
     public EnemyController enemyController; //Asignamos esto en el inspector
@@ -94,7 +94,7 @@ public class Room : MonoBehaviour
         RoomController.instance.RegisterRoom(this);
     }
 
-    public void GetSpawnPoints()
+    public void GetSpawnItems()
     {   
         Debug.Log("Buscando puntos de spawn en la habitación actual");
         // Buscar los puntos de spawn en la habitación actual
@@ -108,7 +108,7 @@ public class Room : MonoBehaviour
     }
 
 
-    public void GetSpawnItems()
+    public void GetSpawnPoints()
     {
         Debug.Log("Buscando puntos de spawn items en abitacion actual");
         // Buscar los puntos de spawn en la habitación actual
@@ -258,7 +258,7 @@ public class Room : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Player")
+        if(collision.tag == "Player" && !isSpawningItems && !passed)
         {
             RoomController.instance.OnPlayerEnterRoom(this);
             Debug.Log("Player entered room on Rool Class" + X + ", " + Y);
