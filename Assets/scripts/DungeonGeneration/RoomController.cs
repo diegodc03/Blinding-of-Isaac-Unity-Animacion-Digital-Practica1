@@ -16,7 +16,8 @@ public class RoomController : MonoBehaviour
 {
 
     public Room HabitacionActual;
-    public SpawnController spawnController; //Asignamos esto en el inspector
+    public SpawnController spawnController; //Asignamos esto en el inspector3
+    public ItemsSpawner itemsSpawner; //Asignamos esto en el inspector
 
     private List<EnemyController> enemiesInRoom = new List<EnemyController>();
 
@@ -124,18 +125,7 @@ public class RoomController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //LoadRoom("Start", 0, 0);
-        //LoadRoom("Empty", 1, 0);
-        //LoadRoom("Empty", -1, 0);
-        //LoadRoom("Empty", 0, 1);
-        //LoadRoom("Empty", 0, -1);
-        // Inicia el spawner de la habitación
-        ///InitializeRoomSpawner();
-        ///// Asegúrate de que spawnController esté asignado
-        //if (spawnController == null)
-        //{
-            //Debug.LogError("SpawnController no está asignado en la habitación");
-        //}
+        
     }
 
 
@@ -156,6 +146,7 @@ public class RoomController : MonoBehaviour
            // Debug.Log("Habitacion actual no pasada");
             // Solo inicia el spawn si es una habitación nueva y no se han generado enemigos aún
             spawnController.CheckAndSpawnEnemies(HabitacionActual);
+            itemsSpawner.aniadirItemsALaRoom(HabitacionActual);
         }
     }
 
@@ -219,10 +210,14 @@ public class RoomController : MonoBehaviour
         CamaraController.instance.habitacionActual = room;
         HabitacionActual = room;
 
+
+        
         
         // Se podria mirar lo de que a parte de resetear el spawner, tambien se inicie el spawner de la habitacion para que no se este en el update del roomcontroller
 
         spawnController.ResetSpawnerState();
+
+        
     }
 
 

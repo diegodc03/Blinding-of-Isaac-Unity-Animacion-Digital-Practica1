@@ -6,14 +6,9 @@ using UnityEngine;
 
 
 [System.Serializable]
-public class CollectibleItem // Renamed to CollectibleItem
-{
-    public String name;
-    public String description;
-    public Sprite image;
-}
 
-public class collectionController : MonoBehaviour // Corrected typo in the class name
+
+public class CollectionController : MonoBehaviour // Corrected typo in the class name
 {
     public CollectibleItem collectibleItem; // Updated to use the new class name
     public float healthChange;
@@ -21,9 +16,11 @@ public class collectionController : MonoBehaviour // Corrected typo in the class
     public float attackSpeedChange; // Corrected typo (from atackSpeedChange)
     public float bulletSizeChange;
 
-    void Start()
+    public void StartItem(CollectibleItem item)
     {
-        GetComponent<SpriteRenderer>().sprite = collectibleItem.image;
+        // Inicializamos el sprite y el collider en el objeto
+        collectibleItem = item; // Guardamos el item asignado
+        GetComponent<SpriteRenderer>().sprite = item.image;
         Destroy(GetComponent<PolygonCollider2D>());
         gameObject.AddComponent<PolygonCollider2D>();
     }

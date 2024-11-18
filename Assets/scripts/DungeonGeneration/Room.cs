@@ -23,6 +23,9 @@ public class Room : MonoBehaviour
     private bool actualizarPuertas = false;
 
     public Transform[] spawnPoints; 
+    public Transform[] spawnItems;
+
+    public ItemsSpawner itemsSpawner; //Asignamos esto en el inspector
 
 
     public SpawnController spawnController; //Asignamos esto en el inspector
@@ -54,6 +57,7 @@ public class Room : MonoBehaviour
     {
         // Inicializamos la lista de puertas y las asignamos
         GetSpawnPoints();
+
 
         // Inicializamos el número de objetos a spawnear en la habitación --> min 1, max 3
         numberOfObjectsRandomPerRoom = UnityEngine.Random.Range(1, 3);
@@ -93,6 +97,20 @@ public class Room : MonoBehaviour
     public void GetSpawnPoints()
     {   
         Debug.Log("Buscando puntos de spawn en la habitación actual");
+        // Buscar los puntos de spawn en la habitación actual
+        // Buscar los puntos de spawn en la habitación actual
+        this.spawnItems = GameObject.FindGameObjectsWithTag("spawnItems")
+            .Where(go => go.transform.IsChildOf(transform)) // Asegurarse de que están dentro de esta habitación
+            .Select(go => go.transform)
+            .ToArray();
+
+        Debug.Log("Spawn points en esta habitación: " + spawnItems.Length);
+    }
+
+
+    public void GetSpawnItems()
+    {
+        Debug.Log("Buscando puntos de spawn items en abitacion actual");
         // Buscar los puntos de spawn en la habitación actual
         // Buscar los puntos de spawn en la habitación actual
         this.spawnPoints = GameObject.FindGameObjectsWithTag("spawnPoints")
