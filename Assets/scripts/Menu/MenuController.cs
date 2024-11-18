@@ -69,4 +69,10 @@ public class MenuController : MonoBehaviour
     }
 
 
+    public void salirseAlMenuPrincipal()
+    {
+        SceneManager.LoadScene("MenuPrincipal");
+    }
+
+
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
@@ -7,7 +8,7 @@ public class EnemySpawner : MonoBehaviour
     // Prefab del enemigo que se va a instanciar
     public GameObject enemyPrefab;
     // Lista de puntos de spawn
-    public Transform[] spawnPoints;
+   
 
 
     // Para saber si la corrutina está en ejecución
@@ -16,26 +17,28 @@ public class EnemySpawner : MonoBehaviour
     public int currentEnemyCount = 0;
 
 
-    
+   
 
 
-    public void StartSpawning(float spawnInterval, int maxEnemies, int minEnemies, int maxEnemiesRandom)
+    public void StartSpawning(float spawnInterval, int maxEnemies, int minEnemies, int maxEnemiesRandom, Transform[] spawnPoints)
     {
 
         Debug.Log("Enemigos a spawnear en startSpawning"+maxEnemiesRandom);
         if (!isSpawning)  // Verifica si no se está generando ya enemigos
         {
-            StartCoroutine(SpawnEnemies(spawnInterval, maxEnemies, minEnemies, maxEnemiesRandom));
             isSpawning = true;
+            StartCoroutine(SpawnEnemies(spawnInterval, maxEnemies, minEnemies, maxEnemiesRandom, spawnPoints));
+            isSpawning = false;
         }
     }
 
     
 
 
-    IEnumerator SpawnEnemies(float spawnInterval, int maxEnemies, int minEnemies, int maxEnemiesRandom)
+    IEnumerator SpawnEnemies(float spawnInterval, int maxEnemies, int minEnemies, int maxEnemiesRandom, Transform[] spawnPoints)
     {
         Debug.Log("Enemigos a spawnear en spawnEnemies"+maxEnemiesRandom);
+        Debug.Log("spawnPoints"+spawnPoints.Length);    
 
         // Mientras no se haya alcanzado el limite de enemigos
         while (currentEnemyCount < maxEnemiesRandom)
@@ -52,8 +55,8 @@ public class EnemySpawner : MonoBehaviour
             // Aumenta el contador de enemigos
             currentEnemyCount++;
         }
-    }   
-
+        currentEnemyCount = 0;
+    }
 
 
     // Update is called once per frame

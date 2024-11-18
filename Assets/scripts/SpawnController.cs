@@ -1,106 +1,98 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SpawnController : MonoBehaviour
 {
-    // Habitacion actual donde se encuentra el personaje
-    public Room habitacionActual;
+
 
     // Referencia al EnemySpawner para controlar el spawn
     public EnemySpawner enemySpawner;
 
+
     private bool enemiesSpawned = false;
 
-
-    public float spawnInterval = 3f;
+    // Tiempo entre los spawns
+    public float spawnInterval = 1f;
 
     // Cantidad de enemigos a spawnear
     public int maxEnemies = 50;
     public int minEnemies = 5;
-
-    public int maxEnemiesRandom;
-
+    public int maxEnemiesRandom=0;
     
     // Contador de enemigos actuales
     private int enemigosEliminados = 0;
 
-
     private bool puertasActivadas = false;
 
 
+    
 
-    // Start is called before the first frame update
-    void Start()
+
+
+    // Verifica si es necesario spawnear enemigos
+    public void CheckAndSpawnEnemies(Room habitacionActual)
     {
-        // Asegúrate de que enemySpawner está asignado en el Inspector
-        if (enemySpawner == null)
+           ///Debug.Log("Estoy en la habitacion" + habitacionActual.X + ", " + habitacionActual.Y);
+        if(SceneManager.GetActiveScene().name == "BasementStart" || (habitacionActual.X == 0 && habitacionActual.Y == 0))
         {
-            Debug.LogError("EnemySpawner no está asignado en el SpawnController");
+            return;
         }
-    }
+        
 
-    // Update is called once per frame
-    void Update()
-    {   
-        
-        
-        // Solo spawnear enemigos si estamos en una nueva habitación y no se han generado ya
-        if (habitacionActual != null && !enemiesSpawned && habitacionActual.passed == false)
+        if (!enemiesSpawned && habitacionActual != null && !habitacionActual.passed)
         {
-            if(habitacionActual != null && habitacionActual.passed == false)
+            // Activar puertas si es necesario
+            if (!puertasActivadas )
             {
-                if (!puertasActivadas)
-                {
-                    habitacionActual.activarPuertas();
-                    puertasActivadas = true;
-                }
-                
-                SpawnearEnemigosEnHabitacionActual();
+                Debug.Log("Activando puertas");
+                habitacionActual.activarPuertas();
+                puertasActivadas = true;
             }
-            
+
+            SpawnearEnemigos(habitacionActual);
         }
     }
 
+    // Llama al método de spawn cuando es necesario
+    private void SpawnearEnemigos(Room habitacionActual)
+    {
+        Debug.Log($"Spawneando enemigos en la habitación {habitacionActual.X}, {habitacionActual.Y}");
 
-    public void SpawnearEnemigosEnHabitacionActual()
-    {   
-        
-        if (habitacionActual != null && enemySpawner != null)
-        {
-            // Llamamos al método de spawn del EnemySpawner solo cuando entras en una nueva habitación
+        // Establece un número aleatorio de enemigos a spawnear
+        maxEnemiesRandom = Random.Range(minEnemies, maxEnemies);
+        enemigosEliminados = 0;
+        habitacionActual.GetSpawnPoints();
+        Debug.Log("SpawnPoints: " + habitacionActual.spawnPoints.Length);
+        // Llama al método de spawn del EnemySpawner
+        enemySpawner.StartSpawning(spawnInterval, maxEnemies, minEnemies, maxEnemiesRandom, habitacionActual.spawnPoints);
 
-            // Selecciona un numero aleatorio de enemigos a spawnear
-            this.maxEnemiesRandom = Random.Range(minEnemies, maxEnemies);
-            Debug.Log("Elemigos a spawnear: " + maxEnemiesRandom);
-
-
-            enemySpawner.StartSpawning(spawnInterval, maxEnemies, minEnemies, maxEnemiesRandom);
-
-            // Marcar que ya se generaron los enemigos en esta habitación
-            enemiesSpawned = true;
-        }
-
-
+        // Marca que los enemigos ya fueron spawneados
+        enemiesSpawned = true;
     }
 
 
-    //Funcion que se llama desde Enter Room
-    public void OnPlayerEnterRoom(Room room)
+    // Resetea los estados de spawn al entrar en una nueva habitación
+    public void ResetSpawnerState()
     {
-        habitacionActual = room; // Actualiza la habitación actual
-        enemiesSpawned = false; // Resetea el estado de enemigos generados
-        
+        enemiesSpawned = false;
+        enemigosEliminados = 0;
+        maxEnemiesRandom = 0;
+        puertasActivadas = false;
     }
 
 
-    public void DecrementarEnemigosRestantes()
+  
+
+
+    public void DecrementarEnemigosRestantes(Room habitacionActual)
     {
-        enemigosEliminados++;
+        this.enemigosEliminados = this.enemigosEliminados + 1;
         Debug.Log("Enemigos Totales: " + this.maxEnemiesRandom);
-        Debug.Log("Enemigos restantes: " + enemigosEliminados);
+        Debug.Log("Enemigos restantes: " + this.enemigosEliminados);
         // Comprobar si todos los enemigos han sido derrotados
-        if (enemigosEliminados >= this.maxEnemiesRandom)
+        if (this.enemigosEliminados >= this.maxEnemiesRandom )
         {
 
             Debug.Log("Estoy en la habitacion" + habitacionActual.X + ", " + habitacionActual.Y);
@@ -108,9 +100,14 @@ public class SpawnController : MonoBehaviour
             Debug.Log("Todos los enemigos han sido derrotados. Puedes avanzar.");
             // Aquí puedes activar algo en la habitación, como abrir una puerta
             habitacionActual.passed = true;
-            enemigosEliminados = 0;
+            this.enemigosEliminados = 0;
+            Debug.Log("Habitacion pasada: " + habitacionActual.passed);
+
             habitacionActual.desactivarPuertas();
+     
         }
+        
+        
     }
 
 

@@ -41,8 +41,8 @@ public class Door : MonoBehaviour
     // Método para abrir la puerta (activar la imagen de puerta abierta y desactivar el collider)
     public void AbrirPuerta()
     {
-        Debug.Log("Puerta Cerrada img"+puertaCerrada);
-        Debug.Log("Puerta abierta img"+puertaAbierta);
+        Debug.Log("Puerta Cerrada img "+puertaCerrada);
+        Debug.Log("Puerta abierta img "+puertaAbierta);
         
 
 

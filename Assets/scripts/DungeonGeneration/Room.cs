@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using UnityEngine;
 
 public class Room : MonoBehaviour
@@ -21,9 +22,14 @@ public class Room : MonoBehaviour
 
     private bool actualizarPuertas = false;
 
+    public Transform[] spawnPoints; 
+
 
     public SpawnController spawnController; //Asignamos esto en el inspector
+    public EnemyController enemyController; //Asignamos esto en el inspector
 
+
+    public int numberOfObjectsRandomPerRoom;
 
     // Agregamos las puertas a una lista para facilitar su gestión
    
@@ -37,6 +43,8 @@ public class Room : MonoBehaviour
     }
 
 
+
+
     public List<Door> doors = new List<Door>();
 
     public List<Door> activatedDoors = new List<Door>();
@@ -45,7 +53,11 @@ public class Room : MonoBehaviour
     void Start()
     {
         // Inicializamos la lista de puertas y las asignamos
-        
+        GetSpawnPoints();
+
+        // Inicializamos el número de objetos a spawnear en la habitación --> min 1, max 3
+        numberOfObjectsRandomPerRoom = UnityEngine.Random.Range(1, 3);
+
 
         if (RoomController.instance == null)
         {
@@ -78,7 +90,18 @@ public class Room : MonoBehaviour
         RoomController.instance.RegisterRoom(this);
     }
 
+    public void GetSpawnPoints()
+    {   
+        Debug.Log("Buscando puntos de spawn en la habitación actual");
+        // Buscar los puntos de spawn en la habitación actual
+        // Buscar los puntos de spawn en la habitación actual
+        this.spawnPoints = GameObject.FindGameObjectsWithTag("spawnPoints")
+            .Where(go => go.transform.IsChildOf(transform)) // Asegurarse de que están dentro de esta habitación
+            .Select(go => go.transform)
+            .ToArray();
 
+        Debug.Log("Spawn points en esta habitación: " + spawnPoints.Length);
+    }
 
 
     //Habria que buscar el metodo para que si no hay una habitacion conectada, se elimine la puerta
@@ -222,9 +245,10 @@ public class Room : MonoBehaviour
             RoomController.instance.OnPlayerEnterRoom(this);
             Debug.Log("Player entered room on Rool Class" + X + ", " + Y);
 
-            if (spawnController != null)
+            
+            if(enemyController != null)
             {
-                spawnController.OnPlayerEnterRoom(this); // Llama a un método en el SpawnController
+                enemyController.OnPlayerEnterRoom();
             }
 
         }
@@ -242,6 +266,7 @@ public class Room : MonoBehaviour
             {
                 if(puerta.gameObject == true)
                 {
+                    Debug.Log("Habitacion a cerrar" + X + ", " + Y);
                     puerta.CerrarPuerta();
                 }
             }
@@ -261,7 +286,7 @@ public class Room : MonoBehaviour
 
                 if(puerta.gameObject == true)
                 {
-
+                    Debug.Log("Habitacion pasada" + X + ", " + Y);
                     puerta.AbrirPuerta();
                 }
             }

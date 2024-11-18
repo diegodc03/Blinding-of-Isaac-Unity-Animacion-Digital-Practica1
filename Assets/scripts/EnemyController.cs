@@ -27,6 +27,8 @@ public class EnemyController : MonoBehaviour
 
     //para poder llamar a este
     private SpawnController spawnController;
+    private Room currentRoom;   // Referencia a la habitación en la que se encuentra el enemigo
+
 
     public enemyState currState = enemyState.Wander;
 
@@ -50,16 +52,22 @@ public class EnemyController : MonoBehaviour
 
     public GameObject bulletPrefab;
 
+    // Referencia al RoomController (para saber en qué habitación está el enemigo)
+    private RoomController roomController;
+
+
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         spawnController = FindObjectOfType<SpawnController>();
+        currentRoom = FindObjectOfType<RoomController>().HabitacionActual;  // Asigna la habitación actual del RoomController
     }
 
     // Update is called once per frame
     void Update()
     {
+
         switch (currState)
         {
             case (enemyState.Wander):
@@ -88,6 +96,17 @@ public class EnemyController : MonoBehaviour
         }
 
     }
+
+
+
+
+    public void OnPlayerEnterRoom()
+    {
+        Debug.Log("Player entered room on EnemyController");
+        spawnController = FindObjectOfType<SpawnController>();
+        currentRoom = FindObjectOfType<RoomController>().HabitacionActual;  // Actualiza la habitación cuando el jugador entra
+    }
+
 
     private bool IsPlayerInRange(float range)
     {
@@ -165,7 +184,7 @@ public class EnemyController : MonoBehaviour
     public void Death()
     { 
         Debug.Log("Enemigo muerto");
-        spawnController.DecrementarEnemigosRestantes();
+        spawnController.DecrementarEnemigosRestantes(currentRoom);
         Destroy(gameObject);
     }
 
