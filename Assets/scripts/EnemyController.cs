@@ -118,8 +118,16 @@ public class EnemyController : MonoBehaviour
 
     private bool IsPlayerInRange(float range)
     {
-        // posicion del elemento, posicion del jugador
-        return Vector3.Distance(transform.position, player.transform.position) <= range;
+        if(player != null)
+        {
+            // posicion del elemento, posicion del jugador
+            return Vector3.Distance(transform.position, player.transform.position) <= range;
+        }
+        else
+        {
+            return false;
+        }
+        
     }
 
 
@@ -152,8 +160,11 @@ public class EnemyController : MonoBehaviour
 
     void Follow()
     {
-        // Lo movemos de la posicion actual a la posicion del jugador , y como esto se hace por frame, se ira moviendo poco a poco en direccion al jugador
-        transform.position = Vector2.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
+        if (player != null)
+        {
+            // Lo movemos de la posicion actual a la posicion del jugador , y como esto se hace por frame, se ira moviendo poco a poco en direccion al jugador
+            transform.position = Vector2.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
+        }
     }
 
     void Atack()
@@ -171,7 +182,6 @@ public class EnemyController : MonoBehaviour
                     StartCoroutine(CoolDown());
                     break;
                 case (EnemyType.Ranged):
-                    Debug.Log("Atacando en RAAAAAAAAAAAAAAAAAAAAAAANGED");
                     GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity) as GameObject;
                     bullet.GetComponent<bulletController>().GetPlayer(player.transform);
                     bullet.AddComponent<Rigidbody2D>().gravityScale = 0;

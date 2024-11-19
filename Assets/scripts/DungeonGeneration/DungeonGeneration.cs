@@ -20,8 +20,6 @@ public class DungeonGeneration : MonoBehaviour
         RoomController.instance.LoadRoom("Start",0,0);
         foreach (Vector2Int habitacion in habitaciones)
         {
-            
-            
             RoomController.instance.LoadRoom("Empty", habitacion.x, habitacion.y);
         }
     }

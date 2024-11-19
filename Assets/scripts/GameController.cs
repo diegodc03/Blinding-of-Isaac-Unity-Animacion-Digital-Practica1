@@ -20,7 +20,6 @@ public class GameController : MonoBehaviour
     private static float bulletSize = 0.5f;
 
 
-    public Text healthText;
 
 
     /// <summary>
@@ -58,22 +57,28 @@ public class GameController : MonoBehaviour
 
 
 
-    
-      // Start is called before the first frame update
-     private void Awake()
-     {
-         if(instance == null)
-         {
-             instance = this;
-         }
-     }
-     
+
+    // Start is called before the first frame update
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject); // Evita que el objeto se destruya al cambiar de escena
+        }
+        else
+        {
+            Destroy(gameObject); // Si ya hay una instancia, destruye la nueva
+        }
+    }
+
+
 
 
     // Update is called once per frame
     void Update()
     {
-        healthText.text = "Health:" + health;
+        //healthText.text = "Health:" + health;
     }
 
 

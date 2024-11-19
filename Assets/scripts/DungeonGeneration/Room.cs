@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Room : MonoBehaviour
 {
@@ -22,10 +23,12 @@ public class Room : MonoBehaviour
 
     private bool actualizarPuertas = false;
 
+    public bool isFinalRoom = false;
+
     public Transform[] spawnPoints; 
     public Transform[] spawnItems;
 
-    public ItemsSpawner itemsSpawner; //Asignamos esto en el inspector
+    //public ItemsSpawner itemsSpawner; //Asignamos esto en el inspector
     public bool isSpawningItems = false;
 
     public SpawnController spawnController; //Asignamos esto en el inspector
@@ -58,11 +61,6 @@ public class Room : MonoBehaviour
         // Inicializamos la lista de puertas y las asignamos
         GetSpawnPoints();
 
-
-        // Inicializamos el número de objetos a spawnear en la habitación --> min 1, max 3
-        numberOfObjectsRandomPerRoom = UnityEngine.Random.Range(1, 3);
-
-
         if (RoomController.instance == null)
         {
             Debug.Log("RoomController not found");
@@ -92,19 +90,6 @@ public class Room : MonoBehaviour
         }
        
         RoomController.instance.RegisterRoom(this);
-    }
-
-    public void GetSpawnItems()
-    {   
-        Debug.Log("Buscando puntos de spawn en la habitación actual");
-        // Buscar los puntos de spawn en la habitación actual
-        // Buscar los puntos de spawn en la habitación actual
-        this.spawnItems = GameObject.FindGameObjectsWithTag("spawnItems")
-            .Where(go => go.transform.IsChildOf(transform)) // Asegurarse de que están dentro de esta habitación
-            .Select(go => go.transform)
-            .ToArray();
-
-        Debug.Log("Spawn points en esta habitación: " + spawnItems.Length);
     }
 
 
@@ -177,6 +162,23 @@ public class Room : MonoBehaviour
         }
     }
 
+    // X e Y son las coordenadas de la sala a la que se va a desconectar de la puerta
+    public void eliminarAcopleDePuerta(int X, int Y)
+    {
+        if(RoomController.instance.DoesRoomExist(X, Y))
+        {
+            foreach (Door d in doors)
+            {
+                // Si la puerta conecta con las coordenadas dadas, desactivarla
+                if (d.connectedRoomX == X && d.connectedRoomY == Y )
+                {
+                    d.gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+
     //Queremos que unicamente haya una entrada a la sala final para que así sea obligatorio pasar por todas las salas, si en algun momento estan muchas salas juntas
     //, se eliminan las puertas de las salas que no esten conectadas a la sala final menos una.
     public void EliminarPuertasUltimaSala()
@@ -190,7 +192,7 @@ public class Room : MonoBehaviour
             switch (d.doorType)
             {
                 case Door.DoorType.top:
-                    if (!RoomController.instance.DoesRoomExist(X, Y + 1) || puertaEncontrada)
+                    if ((!RoomController.instance.DoesRoomExist(X, Y + 1) || puertaEncontrada) )
                     {
                         d.gameObject.SetActive(false);
                     }else{
@@ -198,7 +200,7 @@ public class Room : MonoBehaviour
                     }
                     break;
                 case Door.DoorType.bottom:
-                    if (!RoomController.instance.DoesRoomExist(X, Y - 1) || puertaEncontrada)
+                    if ((!RoomController.instance.DoesRoomExist(X, Y - 1) || puertaEncontrada) )
                     {        
                         d.gameObject.SetActive(false);
                     }else{
@@ -206,7 +208,7 @@ public class Room : MonoBehaviour
                     }
                     break;
                 case Door.DoorType.left:
-                    if (!RoomController.instance.DoesRoomExist(X - 1, Y) || puertaEncontrada)
+                    if ((!RoomController.instance.DoesRoomExist(X - 1, Y) || puertaEncontrada) )
                     {
                         d.gameObject.SetActive(false);
                     }else{
@@ -214,7 +216,7 @@ public class Room : MonoBehaviour
                     }
                     break;
                 case Door.DoorType.right:
-                    if (!RoomController.instance.DoesRoomExist(X + 1, Y) || puertaEncontrada)
+                    if ((!RoomController.instance.DoesRoomExist(X + 1, Y) || puertaEncontrada))
                     {
                         //Debug.Log("Eliminando puertas 1");
                         d.gameObject.SetActive(false);
@@ -224,6 +226,7 @@ public class Room : MonoBehaviour
                     break;
             }
         }
+        //actualizarPuertas = true;
     }
 
 
@@ -231,6 +234,7 @@ public class Room : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if(name.Contains("End") && !actualizarPuertas)
         {
             EliminarPuertasUltimaSala();
@@ -258,7 +262,16 @@ public class Room : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Player" && !isSpawningItems && !passed)
+        Debug.Log("Estoy en com,probacion ultima sala" + isFinalRoom);
+        // Si es la habitacion final, llamar a la funcion de la habitacion final donde se esperara 5 segundos y se cargara la escena de menu principal
+        if (isFinalRoom && collision.tag == "Player")
+        {
+            Debug.Log("Habitación final alcanzada. Esperando 5 segundos...");
+            StartCoroutine(FinalRoom());
+        }
+
+
+        if (collision.tag == "Player" && !isSpawningItems && !passed)
         {
             RoomController.instance.OnPlayerEnterRoom(this);
             Debug.Log("Player entered room on Rool Class" + X + ", " + Y);
@@ -273,6 +286,19 @@ public class Room : MonoBehaviour
     }
 
 
+    private IEnumerator FinalRoom()
+    {
+        Debug.Log("Habitación final alcanzada. Esperando 5 segundos...");
+
+        // Espera 5 segundos
+        yield return new WaitForSeconds(5f);
+
+        // Cargar la escena del menú principal
+        SceneManager.LoadScene("MenuPrincipal"); // Reemplaza "MainMenu" con el nombre exacto de tu escena
+    }
+
+
+
 
     //En esta funcion vamos a hacer que si los enemigos han entrado en la sala, se cierren las puertas
     public void activarPuertas()
@@ -284,7 +310,7 @@ public class Room : MonoBehaviour
             {
                 if(puerta.gameObject == true)
                 {
-                    Debug.Log("Habitacion a cerrar" + X + ", " + Y);
+    
                     puerta.CerrarPuerta();
                 }
             }
@@ -295,8 +321,7 @@ public class Room : MonoBehaviour
     //En estas funciones vamos a hacer que si se han eliminado todos los enemigos de la sala, se abran las puertas
     public void desactivarPuertas()
     {
-        Debug.Log("esttoy en desactivar puertas")
-            ;
+        
         if(passed == true)
         {
             foreach(Door puerta in doors)
@@ -304,7 +329,7 @@ public class Room : MonoBehaviour
 
                 if(puerta.gameObject == true)
                 {
-                    Debug.Log("Habitacion pasada" + X + ", " + Y);
+ 
                     puerta.AbrirPuerta();
                 }
             }

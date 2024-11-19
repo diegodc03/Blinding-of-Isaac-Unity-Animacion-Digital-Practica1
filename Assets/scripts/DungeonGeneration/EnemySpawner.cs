@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour
     // Prefab del enemigo que se va a instanciar
     public GameObject enemyPrefab;
     public GameObject enemyPrefab1;
+    //public GameObject enemyPrefab2;
     // Lista de puntos de spawn
    
 
@@ -41,7 +42,11 @@ public class EnemySpawner : MonoBehaviour
     {
         Debug.Log("Enemigos a spawnear en spawnEnemies"+maxEnemiesRandom);
         Debug.Log("spawnPoints"+spawnPoints.Length);    
-
+        if(spawnPoints.Length==0)
+        {
+            Debug.Log("No hay puntos de spawn");
+            yield break;
+        }
         // Mientras no se haya alcanzado el limite de enemigos
         while (currentEnemyCount < maxEnemiesRandom)
         {
@@ -54,7 +59,9 @@ public class EnemySpawner : MonoBehaviour
             // Instancia el enemigo en el punto aleatorio
             if(currentEnemyCount%2==0)
             {
+                
                 Instantiate(enemyPrefab, randomSpawnPoint.position, Quaternion.identity);
+                
             }
             else
             {

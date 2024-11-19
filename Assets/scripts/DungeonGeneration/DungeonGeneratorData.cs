@@ -7,7 +7,21 @@ using UnityEngine;
 public class DungeonGeneratorData : MonoBehaviour
 {
     public int numeroDeRastreadores;
-
     public int iteradorMinimo;
     public int iteradorMaximo;
+
+    private void Start()
+    {
+        if (numeroDeRastreadores == 0)
+        {
+            numeroDeRastreadores = 1;
+        }
+
+        if (iteradorMinimo < 4 )
+        {
+            iteradorMinimo = 4;
+        }
+
+        
+    }
 }

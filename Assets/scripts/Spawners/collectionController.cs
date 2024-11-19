@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
-/*
+
 [System.Serializable]
 
 // Added missing attributes
@@ -13,7 +13,7 @@ public class CollectibleItem // Renamed to CollectibleItem
     public String name;
     public String description;
     public Sprite image;
-}*/
+}
 
 public class CollectionController : MonoBehaviour // Corrected typo in the class name
 {

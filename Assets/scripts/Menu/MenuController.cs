@@ -45,6 +45,11 @@ public class MenuController : MonoBehaviour
 
     public void CargarEscena(string nombreEscena)
     {
+        if(GameController.instance != null)
+        {
+            GameController.instance.ResetGameData();
+        }
+           
         SceneManager.LoadScene(nombreEscena);
     }
 
@@ -69,10 +74,7 @@ public class MenuController : MonoBehaviour
     }
 
 
-    public void salirseAlMenuPrincipal()
-    {
-        SceneManager.LoadScene("MenuPrincipal");
-    }
+    
 
 
 }

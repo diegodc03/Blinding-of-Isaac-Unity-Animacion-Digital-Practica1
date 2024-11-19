@@ -16,6 +16,7 @@ public class RoomController : MonoBehaviour
 {
 
     public Room HabitacionActual;
+
     public SpawnController spawnController; //Asignamos esto en el inspector3
     //public ItemsSpawner itemsSpawner; //Asignamos esto en el inspector
 
@@ -90,6 +91,31 @@ public class RoomController : MonoBehaviour
             room.Y = currentLoadRoomData.Y;
             room.name = currentWorldName + "-" + currentLoadRoomData.name + " " + room.X + " " + room.Y;
 
+
+            // Configurar las puertas de la habitación
+            foreach (Door door in room.doors)
+            {
+                switch (door.doorType)
+                {
+                    case Door.DoorType.top:
+                        door.connectedRoomX = room.X;
+                        door.connectedRoomY = room.Y + 1;
+                        break;
+                    case Door.DoorType.bottom:
+                        door.connectedRoomX = room.X;
+                        door.connectedRoomY = room.Y - 1;
+                        break;
+                    case Door.DoorType.left:
+                        door.connectedRoomX = room.X - 1;
+                        door.connectedRoomY = room.Y;
+                        break;
+                    case Door.DoorType.right:
+                        door.connectedRoomX = room.X + 1;
+                        door.connectedRoomY = room.Y;
+                        break;
+                }
+            }
+
             room.transform.parent = transform;
 
             isLoadingRoom = false;
@@ -132,9 +158,6 @@ public class RoomController : MonoBehaviour
 
    
 
-
-
-
     // Update is called once per frame
     void Update()
     {
@@ -148,11 +171,7 @@ public class RoomController : MonoBehaviour
             spawnController.CheckAndSpawnEnemies(HabitacionActual);
             
         }
-        /*
-        if(HabitacionActual != null && itemsSpawner != null && !HabitacionActual.passed)
-        {
-            itemsSpawner.aniadirItemsALaRoom(HabitacionActual);
-        } */
+        
     }
 
 
@@ -173,7 +192,16 @@ public class RoomController : MonoBehaviour
                 foreach(Room room in loadedRooms)
                 {    
                     room.EliminarPuertasNoConectadas();
+                    
                 }
+
+                // Tenemos que comprobar que la inicial no esta junto a la final, ya yhemos comprobado la final
+                Room habitacionInicial = loadedRooms[0];
+                Room habitacionFinal = loadedRooms[loadedRooms.Count - 1];
+                habitacionFinal.isFinalRoom = true;
+                comprobarHabitacionFinalJuntoInicial(habitacionInicial, habitacionFinal);
+
+
                 habitacionActualizadas = true;
             }   
             return;
@@ -185,6 +213,30 @@ public class RoomController : MonoBehaviour
     }
 
 
+    void comprobarHabitacionFinalJuntoInicial(Room habitacionInicial, Room habitacionFinal)
+    {
+        int xfin = habitacionFinal.X;
+        int yfin = habitacionFinal.Y;
+
+        int xini = habitacionInicial.X;
+        int yini = habitacionInicial.Y;
+
+        if ((xini + 1 == xfin && yini == yfin) || // Derecha
+            (xini - 1 == xfin && yini == yfin) || // Izquierda
+            (xini == xfin && yini + 1 == yfin) || // Arriba
+            (xini == xfin && yini - 1 == yfin))
+        {
+
+            Debug.Log("Habitación final y habitación inicial juntas");
+
+            //Comprobar que habitacion final solo tiene una actica
+            habitacionFinal.isFinalRoom = true;
+            // Cerrar las puertas correspondientes
+            habitacionInicial.eliminarAcopleDePuerta(xfin, yfin);
+            habitacionFinal.eliminarAcopleDePuerta(xini, yini);
+        }
+    }
+
     IEnumerator CargarUltimaHabitacion()
     {
         ultimaHabitacionCargada = true;
@@ -192,7 +244,10 @@ public class RoomController : MonoBehaviour
         if(loadRoomQueue.Count == 0)
         {
 
-            Room ultimaHabitacion = loadedRooms[loadedRooms.Count - 1];            
+            Room ultimaHabitacion = loadedRooms[loadedRooms.Count - 1];
+
+            //Con esto podemos saber si es la ultima habitacion
+            
 
             Room tempRoom = new Room(ultimaHabitacion.X, ultimaHabitacion.Y);
             Destroy(ultimaHabitacion.gameObject);
@@ -218,18 +273,16 @@ public class RoomController : MonoBehaviour
         // Llamar a PlayerController para reiniciar sus datos
         PlayerController.instance.ResetPlayerData();  // Asumiendo que tienes una función para resetear los datos del jugador
 
-        // Llamar a GameController para reiniciar los valores globales
-        //GameController.instance.ResetGameData();  // Asumiendo que tienes una función para reiniciar los datos globales del juego
-
         // Si la habitación no ha sido pasada, reiniciar el spawner
         if (!room.passed)
         {
             spawnController.ResetSpawnerState();
         }
 
-
-
     }
+
+
+   
 
 
 

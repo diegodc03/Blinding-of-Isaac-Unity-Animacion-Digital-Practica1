@@ -34,9 +34,12 @@ public class SpawnController : MonoBehaviour
     // Verifica si es necesario spawnear enemigos
     public void CheckAndSpawnEnemies(Room habitacionActual)
     {
+        Debug.Log("Estoy en la habitacion" + habitacionActual.X + ", " + habitacionActual.Y);
+
            ///Debug.Log("Estoy en la habitacion" + habitacionActual.X + ", " + habitacionActual.Y);
-        if(SceneManager.GetActiveScene().name == "BasementStart" || (habitacionActual.X == 0 && habitacionActual.Y == 0))
+        if(SceneManager.GetActiveScene().name == "BasementStart" || (habitacionActual.X == 0 && habitacionActual.Y == 0) || SceneManager.GetActiveScene().name == "BasementEnd")
         {
+            Debug.Log("No se spawnean enemigos en la habitación inicial o final");
             return;
         }
         
@@ -62,6 +65,11 @@ public class SpawnController : MonoBehaviour
 
         // Establece un número aleatorio de enemigos a spawnear
         maxEnemiesRandom = Random.Range(minEnemies, maxEnemies);
+        if(spawnInterval == 0)
+        {
+            spawnInterval = Random.Range(0.7f, 3f);
+        }
+        
         enemigosEliminados = 0;
         habitacionActual.GetSpawnPoints();
         Debug.Log("SpawnPoints: " + habitacionActual.spawnPoints.Length);
