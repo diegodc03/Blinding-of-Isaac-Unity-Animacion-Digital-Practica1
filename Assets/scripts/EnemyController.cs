@@ -27,6 +27,7 @@ public class EnemyController : MonoBehaviour
 
     //para poder llamar a este
     private SpawnController spawnController;
+
     private Room currentRoom;   // Referencia a la habitación en la que se encuentra el enemigo
 
 
@@ -71,32 +72,39 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        switch (currState)
+        if (player != null)
         {
-            case (enemyState.Wander):
-                Wander();
-                break;
-            case (enemyState.Follow):
-                Follow();
-                break;
-            case (enemyState.Die):
-                break;
-            case (enemyState.Atack):
-                Atack();
-                break;
 
-        }
+            switch (currState)
+            {
+                case (enemyState.Wander):
+                    Wander();
+                    break;
+                case (enemyState.Follow):
+                    Follow();
+                    break;
+                case (enemyState.Die):
+                    break;
+                case (enemyState.Atack):
+                    Atack();
+                    break;
 
-        if (IsPlayerInRange(range) && currState != enemyState.Die) {
-            currState = enemyState.Follow;
-        } else if (!IsPlayerInRange(range) && currState != enemyState.Die) {
-            currState = enemyState.Wander;
-        }
+            }
 
-        if (Vector3.Distance(transform.position, player.transform.position) <= atackRange)
-        {
-            currState = enemyState.Atack;
+            if (IsPlayerInRange(range) && currState != enemyState.Die)
+            {
+                currState = enemyState.Follow;
+            }
+            else if (!IsPlayerInRange(range) && currState != enemyState.Die)
+            {
+                currState = enemyState.Wander;
+            }
+
+
+            if (Vector3.Distance(transform.position, player.transform.position) <= atackRange)
+            {
+                currState = enemyState.Atack;
+            }
         }
 
     }
@@ -186,11 +194,23 @@ public class EnemyController : MonoBehaviour
                     bullet.GetComponent<bulletController>().GetPlayer(player.transform);
                     bullet.AddComponent<Rigidbody2D>().gravityScale = 0;
                     bullet.GetComponent<bulletController>().isEnemyBullet = true;
+
+
+                    // Obtener la dirección hacia el jugador
+                    Vector3 direction = (player.transform.position - transform.position).normalized;
+                    // Rotar la bala hacia la dirección de disparo
+                    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg; // Convertir a grados
+                    bullet.transform.rotation = Quaternion.Euler(0, 0, angle);
+
                     StartCoroutine(CoolDown());
                     break;
+
+
+
+                    
+
             }
         }
-        
     }
 
 

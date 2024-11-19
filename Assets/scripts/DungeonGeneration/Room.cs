@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -26,13 +27,19 @@ public class Room : MonoBehaviour
     public bool isFinalRoom = false;
 
     public Transform[] spawnPoints; 
-    public Transform[] spawnItems;
+
 
     //public ItemsSpawner itemsSpawner; //Asignamos esto en el inspector
     public bool isSpawningItems = false;
 
     public SpawnController spawnController; //Asignamos esto en el inspector
     public EnemyController enemyController; //Asignamos esto en el inspector
+
+    public GameObject topWallCollider;
+    public GameObject bottomWallCollider;
+    public GameObject leftWallCollider;
+    public GameObject rightWallCollider;
+
 
 
     public int numberOfObjectsRandomPerRoom;
@@ -47,9 +54,6 @@ public class Room : MonoBehaviour
         Y = y;
         
     }
-
-
-
 
     public List<Door> doors = new List<Door>();
 
@@ -121,6 +125,7 @@ public class Room : MonoBehaviour
                 case Door.DoorType.top:
                     if (!RoomController.instance.DoesRoomExist(X, Y + 1))
                     {
+                        topWallCollider.SetActive(true);
                         d.gameObject.SetActive(false);
                     }
                     else
@@ -131,6 +136,7 @@ public class Room : MonoBehaviour
                 case Door.DoorType.bottom:
                     if (!RoomController.instance.DoesRoomExist(X, Y - 1))
                     {
+                        bottomWallCollider.SetActive(true);
                         d.gameObject.SetActive(false);
                     }
                     else
@@ -141,6 +147,7 @@ public class Room : MonoBehaviour
                 case Door.DoorType.left:
                     if (!RoomController.instance.DoesRoomExist(X - 1, Y))
                     {
+                        leftWallCollider.SetActive(true);
                         d.gameObject.SetActive(false);
                     }
                     else
@@ -151,6 +158,7 @@ public class Room : MonoBehaviour
                 case Door.DoorType.right:
                     if (!RoomController.instance.DoesRoomExist(X + 1, Y))
                     {
+                        rightWallCollider.SetActive(true);
                         d.gameObject.SetActive(false);
                     }
                     else
@@ -194,33 +202,45 @@ public class Room : MonoBehaviour
                 case Door.DoorType.top:
                     if ((!RoomController.instance.DoesRoomExist(X, Y + 1) || puertaEncontrada) )
                     {
+                        
                         d.gameObject.SetActive(false);
-                    }else{
+                        topWallCollider.SetActive(true);
+                    }
+                    else{
                         puertaEncontrada = true;
                     }
                     break;
                 case Door.DoorType.bottom:
                     if ((!RoomController.instance.DoesRoomExist(X, Y - 1) || puertaEncontrada) )
-                    {        
+                    {
+                       
                         d.gameObject.SetActive(false);
-                    }else{
+                        bottomWallCollider.SetActive(true);
+
+                    }
+                    else{
                         puertaEncontrada = true;
                     }
                     break;
                 case Door.DoorType.left:
                     if ((!RoomController.instance.DoesRoomExist(X - 1, Y) || puertaEncontrada) )
                     {
+                        
                         d.gameObject.SetActive(false);
-                    }else{
+                        leftWallCollider.SetActive(true);
+                    }
+                    else{
                         puertaEncontrada = true;
                     }
                     break;
                 case Door.DoorType.right:
                     if ((!RoomController.instance.DoesRoomExist(X + 1, Y) || puertaEncontrada))
                     {
-                        //Debug.Log("Eliminando puertas 1");
+                        
                         d.gameObject.SetActive(false);
-                    }else{
+                        rightWallCollider.SetActive(true);
+                    }
+                    else{
                         puertaEncontrada = true;
                     }
                     break;
@@ -271,7 +291,7 @@ public class Room : MonoBehaviour
         }
 
 
-        if (collision.tag == "Player" && !isSpawningItems && !passed)
+        if (collision.tag == "Player" && !isSpawningItems)
         {
             RoomController.instance.OnPlayerEnterRoom(this);
             Debug.Log("Player entered room on Rool Class" + X + ", " + Y);
