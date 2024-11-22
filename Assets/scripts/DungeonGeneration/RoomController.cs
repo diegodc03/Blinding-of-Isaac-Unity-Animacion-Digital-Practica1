@@ -4,6 +4,7 @@ using System.Data;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using Unity.VisualScripting;
 public class RoomInfo
 {
     public string name;
@@ -14,6 +15,8 @@ public class RoomInfo
 }
 public class RoomController : MonoBehaviour
 {
+
+    public GameObject canvasFinal;
 
     public Room HabitacionActual;
 
@@ -91,6 +94,11 @@ public class RoomController : MonoBehaviour
             room.Y = currentLoadRoomData.Y;
             room.name = currentWorldName + "-" + currentLoadRoomData.name + " " + room.X + " " + room.Y;
 
+            if(room.name.Contains("End"))
+            {
+                room.isFinalRoom = true;
+                Debug.Log("Habitacion final: " + room.isFinalRoom);
+            }
 
             // Configurar las puertas de la habitación
             foreach (Door door in room.doors)
@@ -276,6 +284,17 @@ public class RoomController : MonoBehaviour
         {
             spawnController.ResetSpawnerState();
         }
+
+        // Controlar la visibilidad del Canvas
+        if (room.isFinalRoom)
+        {
+            canvasFinal.SetActive(true); // Activar el Canvas en la última habitación.
+        }
+        else
+        {
+            canvasFinal.SetActive(false); // Desactivar el Canvas en otras habitaciones.
+        }
+
 
     }
 

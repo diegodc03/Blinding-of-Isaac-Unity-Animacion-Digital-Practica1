@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 
     public float speed = 5;
     
-    Rigidbody2D rigidbody;
+    Rigidbody2D rigidbody1;
 
     public Text collectedText;
     public static int collectedAmount = 0;
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         //Coge la referencia de la aplicacion
-        rigidbody = GetComponent<Rigidbody2D>();
+        rigidbody1 = GetComponent<Rigidbody2D>();
 
     }
 
@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
         }
         
 
-        rigidbody.velocity = new Vector3 (horizontal * speed, vertical * speed, 0);
+        rigidbody1.velocity = new Vector3 (horizontal * speed, vertical * speed, 0);
         collectedText.text = "Item Collected: " + collectedAmount;
     }
 

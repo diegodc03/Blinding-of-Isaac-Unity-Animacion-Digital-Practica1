@@ -63,7 +63,7 @@ public class EnemyController : MonoBehaviour
         spawnController = FindObjectOfType<SpawnController>();
         currentRoom = FindObjectOfType<RoomController>().HabitacionActual;  // Asigna la habitación actual del RoomController
 
-        speed = Random.Range(2f, 6f);
+        speed = Random.Range(2f, 5.5f);
         coolDown = Random.Range(0.5f, 1f);
     }
 
@@ -217,7 +217,6 @@ public class EnemyController : MonoBehaviour
 
     public void Death()
     { 
-        Debug.Log("Enemigo muerto");
         spawnController.DecrementarEnemigosRestantes(currentRoom);
         Destroy(gameObject);
     }

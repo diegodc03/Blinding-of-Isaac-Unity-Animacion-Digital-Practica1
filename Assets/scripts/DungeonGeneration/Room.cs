@@ -99,7 +99,7 @@ public class Room : MonoBehaviour
 
     public void GetSpawnPoints()
     {
-        Debug.Log("Buscando puntos de spawn items en abitacion actual");
+        
         // Buscar los puntos de spawn en la habitación actual
         // Buscar los puntos de spawn en la habitación actual
         this.spawnPoints = GameObject.FindGameObjectsWithTag("spawnPoints")
@@ -107,7 +107,7 @@ public class Room : MonoBehaviour
             .Select(go => go.transform)
             .ToArray();
 
-        Debug.Log("Spawn points en esta habitación: " + spawnPoints.Length);
+
     }
 
 
@@ -282,19 +282,13 @@ public class Room : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Estoy en com,probacion ultima sala" + isFinalRoom);
-        // Si es la habitacion final, llamar a la funcion de la habitacion final donde se esperara 5 segundos y se cargara la escena de menu principal
-        if (isFinalRoom && collision.tag == "Player")
-        {
-            Debug.Log("Habitación final alcanzada. Esperando 5 segundos...");
-            StartCoroutine(FinalRoom());
-        }
 
+        
 
         if (collision.tag == "Player" && !isSpawningItems)
         {
             RoomController.instance.OnPlayerEnterRoom(this);
-            Debug.Log("Player entered room on Rool Class" + X + ", " + Y);
+
 
             
             if(enemyController != null)
@@ -306,17 +300,7 @@ public class Room : MonoBehaviour
     }
 
 
-    private IEnumerator FinalRoom()
-    {
-        Debug.Log("Habitación final alcanzada. Esperando 5 segundos...");
-
-        // Espera 5 segundos
-        yield return new WaitForSeconds(5f);
-
-        // Cargar la escena del menú principal
-        SceneManager.LoadScene("MenuPrincipal"); // Reemplaza "MainMenu" con el nombre exacto de tu escena
-    }
-
+  
 
 
 
