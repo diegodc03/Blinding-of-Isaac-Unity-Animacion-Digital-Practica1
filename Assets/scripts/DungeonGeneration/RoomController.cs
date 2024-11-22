@@ -227,8 +227,6 @@ public class RoomController : MonoBehaviour
             (xini == xfin && yini - 1 == yfin))
         {
 
-            Debug.Log("Habitación final y habitación inicial juntas");
-
             //Comprobar que habitacion final solo tiene una actica
             habitacionFinal.isFinalRoom = true;
             // Cerrar las puertas correspondientes

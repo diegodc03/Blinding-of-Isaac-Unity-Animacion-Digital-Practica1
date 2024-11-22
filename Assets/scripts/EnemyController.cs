@@ -31,25 +31,23 @@ public class EnemyController : MonoBehaviour
     private Room currentRoom;   // Referencia a la habitación en la que se encuentra el enemigo
 
 
-    public enemyState currState = enemyState.Wander;
+    public enemyState currState = enemyState.Follow;
 
     public EnemyType enemyType;
 
-    public float range;
+    public float range = 50;
 
-    public float speed;
+    public float speed = 2;
 
-    public float coolDown;
+    public float coolDown = 1;
 
     private bool chooseDir = false;
-
-    private bool dead = false;
 
     private bool coolDownAtack = false;
 
     private Vector3 randomDir;
 
-    public float atackRange;
+    public float atackRange = 5;
 
     public GameObject bulletPrefab;
 
@@ -65,8 +63,8 @@ public class EnemyController : MonoBehaviour
         spawnController = FindObjectOfType<SpawnController>();
         currentRoom = FindObjectOfType<RoomController>().HabitacionActual;  // Asigna la habitación actual del RoomController
 
-        speed = Random.Range(2f, 7f);
-        coolDown = Random.Range(0.3f, 1f);
+        speed = Random.Range(2f, 5f);
+        coolDown = Random.Range(0.5f, 1f);
     }
 
     // Update is called once per frame
@@ -77,9 +75,7 @@ public class EnemyController : MonoBehaviour
 
             switch (currState)
             {
-                case (enemyState.Wander):
-                    Wander();
-                    break;
+                
                 case (enemyState.Follow):
                     Follow();
                     break;
@@ -95,10 +91,7 @@ public class EnemyController : MonoBehaviour
             {
                 currState = enemyState.Follow;
             }
-            else if (!IsPlayerInRange(range) && currState != enemyState.Die)
-            {
-                currState = enemyState.Wander;
-            }
+            
 
 
             if (Vector3.Distance(transform.position, player.transform.position) <= atackRange)
@@ -115,7 +108,7 @@ public class EnemyController : MonoBehaviour
     public void OnPlayerEnterRoom()
     {
 
-        Debug.Log("Player entered room on EnemyController");
+  
         spawnController = FindObjectOfType<SpawnController>();
         currentRoom = FindObjectOfType<RoomController>().HabitacionActual;  // Actualiza la habitación cuando el jugador entra
 

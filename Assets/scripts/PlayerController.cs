@@ -8,8 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     public static PlayerController instance;
 
-
-    public float speed;
+    public float speed = 5;
     
     Rigidbody2D rigidbody;
 
@@ -18,11 +17,11 @@ public class PlayerController : MonoBehaviour
 
     public GameObject bulletPrefab;
 
-    public float bulletSpeed;
+    public float bulletSpeed = 10;
 
     private float lastfire;
 
-    public float fireDelay;
+    public float fireDelay = 5;
 
     //Hace referencia al animator del jugaodor
     public Animator animator;
@@ -74,8 +73,7 @@ public class PlayerController : MonoBehaviour
         }
 
         
-        
-
+       
 
         float shootHor = Input.GetAxis("ShootHorizontal");
         float shootVert = Input.GetAxis("ShootVertical");

@@ -8,9 +8,7 @@ public class EnemySpawner : MonoBehaviour
     // Prefab del enemigo que se va a instanciar
     public GameObject enemyPrefab;
     public GameObject enemyPrefab1;
-    //public GameObject enemyPrefab2;
-    // Lista de puntos de spawn
-   
+
 
 
     // Para saber si la corrutina está en ejecución
@@ -25,7 +23,7 @@ public class EnemySpawner : MonoBehaviour
     public void StartSpawning(float spawnInterval, int maxEnemies, int minEnemies, int maxEnemiesRandom, Transform[] spawnPoints)
     {
 
-        Debug.Log("Enemigos a spawnear en startSpawning"+maxEnemiesRandom);
+        
         if (!isSpawning)  // Verifica si no se está generando ya enemigos
         {
             isSpawning = true;
@@ -40,8 +38,7 @@ public class EnemySpawner : MonoBehaviour
 
     IEnumerator SpawnEnemies(float spawnInterval, int maxEnemies, int minEnemies, int maxEnemiesRandom, Transform[] spawnPoints)
     {
-        Debug.Log("Enemigos a spawnear en spawnEnemies"+maxEnemiesRandom);
-        Debug.Log("spawnPoints"+spawnPoints.Length);    
+       
         if(spawnPoints.Length==0)
         {
             Debug.Log("No hay puntos de spawn");
@@ -59,9 +56,7 @@ public class EnemySpawner : MonoBehaviour
             // Instancia el enemigo en el punto aleatorio
             if(currentEnemyCount%2==0)
             {
-                
                 Instantiate(enemyPrefab, randomSpawnPoint.position, Quaternion.identity);
-                
             }
             else
             {

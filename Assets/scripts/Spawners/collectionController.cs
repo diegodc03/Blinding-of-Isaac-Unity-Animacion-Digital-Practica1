@@ -33,26 +33,24 @@ public class CollectionController : MonoBehaviour // Corrected typo in the class
 
     public void Start()
     {
-        Debug.Log("Estoy en Start de CollectionController");
+      
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
 
         if(item.name == "BulletSpeed" && playerController != null)
         {
             bulletSpeed = Random.Range(10f, 20f);
             fireDelayChange = Random.Range(0.1f, 0.5f);
-            Debug.Log("Bullet Speed: " + playerController.bulletSpeed);
-            Debug.Log("Fire Delay: " + playerController.fireDelay);
+
         }
         else if(item.name == "Boot" && playerController != null)
         {
             moveSpeedChange = Random.Range(5f, 15f);
-            Debug.Log("Move Speed Change: " + moveSpeedChange);
-            
+    
         }
         else
         {
             healthChange = Random.Range(1, 4);
-            Debug.Log("Health Change: " + healthChange);
+
         }
         
      

@@ -12,7 +12,7 @@ public class ItemASpawnear : MonoBehaviour
 
     void Start()
     {
-        int random = Random.Range(0, 6);
+        int random = Random.Range(0, 5);
         if(random == 0)
         {
 
