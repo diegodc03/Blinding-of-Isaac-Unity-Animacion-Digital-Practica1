@@ -72,7 +72,6 @@ public class EnemyController : MonoBehaviour
     {
         if (player != null)
         {
-
             switch (currState)
             {
                 

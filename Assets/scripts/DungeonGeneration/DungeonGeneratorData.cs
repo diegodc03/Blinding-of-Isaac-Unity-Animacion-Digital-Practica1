@@ -22,6 +22,5 @@ public class DungeonGeneratorData : MonoBehaviour
             iteradorMinimo = 4;
         }
 
-        
     }
 }

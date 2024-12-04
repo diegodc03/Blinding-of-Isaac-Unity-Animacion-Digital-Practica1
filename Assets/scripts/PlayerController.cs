@@ -48,12 +48,10 @@ public class PlayerController : MonoBehaviour
 
         if(horizontal == 0 && vertical != 0)
         {
-   
             animator.SetFloat("movimiento", 1* vertical * speed);
         }else if(vertical == 0 && horizontal != 0)
         {
          
-            
             animator.SetFloat("movimiento", 1*horizontal * speed);
         }
         else if(horizontal != 0 && vertical != 0)
@@ -128,7 +126,7 @@ public class PlayerController : MonoBehaviour
         speed = 10.0f;
     }
 
-   
 
+ 
 
 }

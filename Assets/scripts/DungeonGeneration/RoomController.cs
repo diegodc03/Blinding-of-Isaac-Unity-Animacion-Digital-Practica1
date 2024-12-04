@@ -15,7 +15,6 @@ public class RoomInfo
 }
 public class RoomController : MonoBehaviour
 {
-
     public GameObject canvasFinal;
 
     public Room HabitacionActual;
